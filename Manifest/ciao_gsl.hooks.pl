@@ -79,22 +79,22 @@ verify_gsl(Value) :-
 with_gsl := ~get_bundle_flag(ciao_gsl:with_gsl).
 auto_install_gsl := ~get_bundle_flag(ciao_gsl:auto_install_gsl).
 
-'$builder_hook'(prebuild_bin) :-
-	do_auto_install_gsl,
-	prebuild_gsl_bindings.
+'$builder_hook'(prepare_build_bin) :-
+	do_auto_install,
+	prepare_bindings.
 
 :- use_module(ciaobld(third_party_install), [auto_install/2]).
 :- use_module(ciaobld(eng_defs), [bld_eng_path/3]).
 :- use_module(ciaobld(builder_aux), [add_rpath/3]).
 
-do_auto_install_gsl :-
+do_auto_install :-
 	( auto_install_gsl(yes) -> 
 	    normal_message("auto-installing GSL (third party)", []),
 	    third_party_install:auto_install(ciao_gsl, gsl)
 	; true
 	).
 
-prebuild_gsl_bindings :-
+prepare_bindings :-
 	( with_gsl(yes) ->
 	    normal_message("configuring GSL library", []),
 	    S = ":- include(ciao_gsl(gsl_ciao)).\n",
