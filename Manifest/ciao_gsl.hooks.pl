@@ -121,10 +121,8 @@ prepare_bindings :-
 	    S = ":- include(ciao_gsl(gsl_ciao_dummy)).\n",
 	    M = ""
 	),
-        % TODO: At this moment this is hardwired into the core engine.
-	%   Make sure that prebuild of this library happens before
-	%   engine build. Options in GSL's 'config_sh' are added in
-	%   the final 'config_mk' and 'config_sh' files for the engine
+        % TODO: See 'static_engine' at engine.hooks.pl for an example
+        %   of engine that links against this library statically
 	%
 	% TODO: Simplify, generalize for other libs
 	%
