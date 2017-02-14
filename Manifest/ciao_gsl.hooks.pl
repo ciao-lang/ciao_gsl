@@ -9,7 +9,7 @@
 
 :- discontiguous(m_bundle_foreign_config_tool/3).
 
-:- bundle_flag(with_gsl, [
+:- bundle_flag(enabled, [
     comment("Enable GSL bindings"),
     details(
       % .....................................................................
@@ -24,7 +24,7 @@
         "GSL has not been detected.  If you want to use the math\n"||
         "library it is highly recommended that you stop the Ciao\n"||
         "configuration and install the GSL library first."),
-    rule_default(WithGSL, verify_gsl(WithGSL)),
+    rule_default(HasGSL, has_gsl(HasGSL)),
     % rule_default('no'),
     %
     interactive([advanced])
@@ -39,10 +39,10 @@ gsl_installed :-
 	% TODO: in Linux 64 bits -- EMM.
 	\+ get_platform('LINUXi686').
 
-verify_gsl(Value) :-
+has_gsl(Value) :-
 	( gsl_installed -> Value = yes ; Value = no ).
 
-:- bundle_flag(auto_install_gsl, [
+:- bundle_flag(auto_install, [
     comment("Auto-install GSL (third party)"),
     details([advanced],
       % .....................................................................
@@ -63,7 +63,7 @@ verify_gsl(Value) :-
 :- use_module(library(system_extra), [mkpath/1]).
 :- use_module(library(bundle/bundle_flags), [get_bundle_flag/2]).
 :- use_module(library(bundle/bundle_paths), [bundle_path/3]).
-:- use_module(ciaobld(third_party_config), [foreign_config_var/3]).
+:- use_module(ciaobld(third_party_config), [foreign_config_var/4]).
 
 % Specification of GSL (third-party component)
 :- def_third_party(gsl, [
@@ -76,8 +76,8 @@ verify_gsl(Value) :-
 
 :- use_module(library(llists), [flatten/2]).
 
-with_gsl := ~get_bundle_flag(ciao_gsl:with_gsl).
-auto_install_gsl := ~get_bundle_flag(ciao_gsl:auto_install_gsl).
+enabled := ~get_bundle_flag(ciao_gsl:enabled).
+auto_install := ~get_bundle_flag(ciao_gsl:auto_install).
 
 '$builder_hook'(prepare_build_bin) :-
 	do_auto_install,
@@ -88,20 +88,20 @@ auto_install_gsl := ~get_bundle_flag(ciao_gsl:auto_install_gsl).
 :- use_module(ciaobld(builder_aux), [add_rpath/3]).
 
 do_auto_install :-
-	( auto_install_gsl(yes) -> 
+	( auto_install(yes) -> 
 	    normal_message("auto-installing GSL (third party)", []),
 	    third_party_install:auto_install(ciao_gsl, gsl)
 	; true
 	).
 
 prepare_bindings :-
-	( with_gsl(yes) ->
+	( enabled(yes) ->
 	    normal_message("configuring GSL library", []),
 	    S = ":- include(ciao_gsl(gsl_ciao)).\n",
- 	    foreign_config_var(gsl, 'cflags', CompilerOpts),
- 	    foreign_config_var(gsl, 'libs', LinkerOpts0),
+ 	    foreign_config_var(ciao_gsl, gsl, 'cflags', CompilerOpts),
+ 	    foreign_config_var(ciao_gsl, gsl, 'libs', LinkerOpts0),
 	    fix_linker_opts(LinkerOpts0, LinkerOpts1),
-	    ( auto_install_gsl(yes) ->
+	    ( auto_install(yes) ->
 	        % If installed as a third party, add ./third-party/lib
 	        % to the runtime library search path
 	        add_rpath(local_third_party, LinkerOpts1, LinkerOpts2)

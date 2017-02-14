@@ -11,7 +11,7 @@ request it to the maintainers of these bindings.
 
 Usage (with auto-installation of GSL):
 ```
-$ ciao configure ciao_gsl --ciao_gsl:with_gsl=yes --ciao_gsl:auto_install_gsl=yes
+$ ciao configure ciao_gsl --ciao_gsl:enabled=yes --ciao_gsl:auto_install=yes
 $ ciao build ciao_gsl
 ```
 
