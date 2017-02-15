@@ -9,9 +9,8 @@ NOTE: These bindings cover only a subset of the functionality provided
 by GSL. If you need any functionality that is missing here, please
 request it to the maintainers of these bindings.
 
-Usage (with auto-installation of GSL):
+Usage (this will install third-party code if missing):
 ```
-$ ciao configure ciao_gsl --ciao_gsl:enabled=yes --ciao_gsl:auto_install=yes
-$ ciao build ciao_gsl
+$ ciao get ciao_gsl
 ```
 
