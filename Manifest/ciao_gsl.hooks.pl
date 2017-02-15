@@ -5,57 +5,6 @@
 
 % ===========================================================================
 
-:- use_module(library(system), [find_executable/2]).
-
-:- discontiguous(m_bundle_foreign_config_tool/3).
-
-:- bundle_flag(enabled, [
-    comment("Enable GSL bindings"),
-    details(
-      % .....................................................................
-      "Set to \"yes\" if you wish to interface with the GSL (GNU Scientific\n"||
-      "Library). If you choose to have the GSL interface, you should have the\n"||
-      "GSL development library installed in the machine where you are\n"||
-      "compiling and using it."),
-    valid_values(['yes', 'no']),
-    %
-    default_comment("GSL detected"),
-    default_value_comment(no,
-        "GSL has not been detected.  If you want to use the math\n"||
-        "library it is highly recommended that you stop the Ciao\n"||
-        "configuration and install the GSL library first."),
-    rule_default(HasGSL, has_gsl(HasGSL)),
-    % rule_default('no'),
-    %
-    interactive([advanced])
-]).
-
-m_bundle_foreign_config_tool(ciao_gsl, gsl, 'gsl-config').
-
-% TODO: it should consider auto_install option!
-gsl_installed :-
-	find_executable(~m_bundle_foreign_config_tool(ciao_gsl, gsl), _),
-	% TODO: Next literal required because now GSL 32 bits is not available
-	% TODO: in Linux 64 bits -- EMM.
-	\+ get_platform('LINUXi686').
-
-has_gsl(Value) :-
-	( gsl_installed -> Value = yes ; Value = no ).
-
-:- bundle_flag(auto_install, [
-    comment("Auto-install GSL (third party)"),
-    details([advanced],
-      % .....................................................................
-      "Set to \"yes\" if you want to auto-install GSL (third party)"),
-    valid_values(['yes', 'no']),
-    %
-    rule_default('no'),
-    %
-    interactive([advanced])
-]).
-
-% ===========================================================================
-
 :- use_module(ciaobld(messages_aux), [normal_message/2]).
 
 :- use_module(library(file_utils), [string_to_file/2]).
@@ -64,6 +13,20 @@ has_gsl(Value) :-
 :- use_module(library(bundle/bundle_flags), [get_bundle_flag/2]).
 :- use_module(library(bundle/bundle_paths), [bundle_path/3]).
 :- use_module(ciaobld(third_party_config), [foreign_config_var/4]).
+:- use_module(library(system), [find_executable/2]).
+
+m_bundle_foreign_config_tool(ciao_gsl, gsl, 'gsl-config').
+
+% Config flags for GSL (third-party component)
+:- third_party_flags([
+    name("GSL (third party)"), 
+    bindings_name("GSL bindings"),
+    allow_auto_install, % allow auto-installation
+    allow_dummy % allow dummy bindings (if enabled=no)
+]).
+
+third_party_preinstalled(ciao_gsl) :-
+	find_executable(~m_bundle_foreign_config_tool(ciao_gsl, gsl), _).
 
 % Specification of GSL (third-party component)
 :- def_third_party(gsl, [
