@@ -47,7 +47,7 @@ auto_install := ~get_bundle_flag(ciao_gsl:auto_install).
 	prepare_bindings.
 
 :- use_module(ciaobld(third_party_install), [auto_install/2]).
-:- use_module(ciaobld(eng_defs), [bld_eng_path/3]).
+:- use_module(ciaobld(eng_defs), [eng_path/3]).
 :- use_module(ciaobld(builder_aux), [add_rpath/3]).
 
 do_auto_install :-
@@ -91,7 +91,7 @@ prepare_bindings :-
 	%
 	EngOpts = [],
 	GSLEng = eng_def(core, 'gsl', EngOpts),
-	GSLCfgDir = ~bld_eng_path(cfgdir, GSLEng), % NOTE: not an engine
+	GSLCfgDir = ~eng_path(cfgdir, GSLEng), % NOTE: not an engine
 	mkpath(GSLCfgDir),
 	string_to_file(M, ~path_concat(GSLCfgDir, 'config_sh')),
 	string_to_file(S, ~bundle_path(ciao_gsl, 'src/ciao_gsl_auto.pl')).
