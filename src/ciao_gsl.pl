@@ -1,5 +1,4 @@
 :- module(ciao_gsl, _, [assertions]).  
-:- doc(nodoc, assertions).
 
 :- doc(title, "GSL bindings").
 
