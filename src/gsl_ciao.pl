@@ -46,7 +46,7 @@
 	    ColsR = 3, matrix_destroy(Matrix) )
 # "Is the inverse of matrix_to_properties.".
 
-:- true pred properties_to_matrix(in(Elements), in(Length), in(Rows),
+:- trust pred properties_to_matrix(in(Elements), in(Length), in(Rows),
 	    in(Cols), go(Matrix)) :: c_double_list * c_size * c_size * c_size * address +
 	(foreign, size_of(Elements, Length), returns(Matrix)) -->
 "
@@ -60,7 +60,7 @@ gsl_matrix * properties_to_matrix(double *elements, size_t length, size_t rows, 
 }
 ".
 
-:- true pred matrix_to_properties(in(Matrix), go(Elements), go(Length),
+:- trust pred matrix_to_properties(in(Matrix), go(Elements), go(Length),
 	    go(Rows), go(Cols)) :: address * c_double_list * c_size * c_size * c_size + (
 	    foreign, size_of(Elements, Length)) -->
 "
@@ -77,7 +77,7 @@ void matrix_to_properties(gsl_matrix *m, double ** list, size_t *length,
 }
 ".
 
-:- true pred list_to_vector(in(Elements), in(Length), go(Vector)) ::
+:- trust pred list_to_vector(in(Elements), in(Length), go(Vector)) ::
 	c_double_list * c_size * address +
 	(foreign, size_of(Elements, Length), returns(Vector)) -->
 "
@@ -91,7 +91,7 @@ gsl_vector * list_to_vector(double * elements, size_t length)
 }
 ".
 
-:- true pred vector_to_list(in(Vector), go(Elements), go(Length)) ::
+:- trust pred vector_to_list(in(Vector), go(Elements), go(Length)) ::
 	address * c_double_list * c_size + (foreign, size_of(Elements, Length)) -->
 "
 void vector_to_list(gsl_vector *v, double ** list, size_t *length)
@@ -109,32 +109,32 @@ void vector_to_list(gsl_vector *v, double ** list, size_t *length)
 	    vector_destroy(Vector) )
 # "Is the inverse of vector_to_list.".
 
-:- true pred matrix_destroy(in(Matrix)) :: address
+:- trust pred matrix_destroy(in(Matrix)) :: address
 	+ (foreign(gsl_matrix_free)).
-:- true pred vector_destroy(in(Vector)) :: address
+:- trust pred vector_destroy(in(Vector)) :: address
 	+ (foreign(gsl_vector_free)).
 
-:- true pred gsl_linalg_HH_svx(in(Matrix), in(Vector)) :: address *
+:- trust pred gsl_linalg_HH_svx(in(Matrix), in(Vector)) :: address *
 	address + (foreign).
 
-:- true pred gsl_linalg_QR_lssolve(in(QR), in(Tau), in(B), in(X),
+:- trust pred gsl_linalg_QR_lssolve(in(QR), in(Tau), in(B), in(X),
 	    in(Residual)) :: address * address * address * address * address +
 	(foreign).
 
-:- true pred gsl_linalg_QR_decomp(in(A), in(Tau)) :: address * address
+:- trust pred gsl_linalg_QR_decomp(in(A), in(Tau)) :: address * address
 	+ (foreign).
 
-:- true pred gsl_vector_alloc(in(Size), go(Vector)) :: c_size * address +
+:- trust pred gsl_vector_alloc(in(Size), go(Vector)) :: c_size * address +
 	(foreign, returns(Vector)).
 
-:- true pred gsl_matrix_alloc(in(Rows), in(Cols), go(Matrix)) :: c_size *
+:- trust pred gsl_matrix_alloc(in(Rows), in(Cols), go(Matrix)) :: c_size *
 	c_size * address + (foreign, returns(Matrix)).
 
-:- true pred gsl_linalg_QR_unpack(in(QR), in(Tau), in(Q), in(R)) ::
+:- trust pred gsl_linalg_QR_unpack(in(QR), in(Tau), in(Q), in(R)) ::
 	address * address * address * address + (foreign).
 
 % TODO: return type ignored
-:- true pred gsl_linalg_QR_U(in(QR), in(U)) :: address * address +
+:- trust pred gsl_linalg_QR_U(in(QR), in(U)) :: address * address +
 	(foreign) -->
 "
 int
@@ -167,17 +167,17 @@ gsl_linalg_QR_U (const gsl_matrix * QR, gsl_matrix * R)
 }
 ".
 
-:- true pred gsl_linalg_QR_Rsvx(in(R), in(X)) :: address *
+:- trust pred gsl_linalg_QR_Rsvx(in(R), in(X)) :: address *
 	address + (foreign).
 
 % The next is equal to gsl_linalg_R_solve:
-% :- true pred gsl_linalg_QR_Rsolve(in(QR), in(X)) :: address * address
+% :- trust pred gsl_linalg_QR_Rsolve(in(QR), in(X)) :: address * address
 %    + (foreign).
 
 % But this is what I want:
 
 % TODO: return type ignored
-:- true pred gsl_linalg_QR_Rsolve_over_determined(in(QR), in(X)) ::
+:- trust pred gsl_linalg_QR_Rsolve_over_determined(in(QR), in(X)) ::
 	address * address + (foreign) -->
 "
 int
@@ -210,11 +210,11 @@ gsl_linalg_QR_Rsolve_over_determined (const gsl_matrix * QR,
 
 %:- initialization(gsl_set_error_handler_off(_)).
 
-:- true pred gsl_set_error_handler_off(go(ErrorHandler)) :: address +
+:- trust pred gsl_set_error_handler_off(go(ErrorHandler)) :: address +
 	(foreign, returns(ErrorHandler)).
 
 
-:- true pred gsl_version(go(VersionStr)) :: string + ( foreign(get_gsl_version),
+:- trust pred gsl_version(go(VersionStr)) :: string + ( foreign(get_gsl_version),
 	    do_not_free(VersionStr) ) -->
 
 "
@@ -228,7 +228,7 @@ get_gsl_version(char ** ptr)
 ".
 
 :- doc(doinclude, polynomial_root/5).
-:- true pred polynomial_root(in(LengthIn),in(LengthOut),in(X),go(Y), go(Err))::
+:- trust pred polynomial_root(in(LengthIn),in(LengthOut),in(X),go(Y), go(Err))::
 	c_size*c_size*c_double_list * c_double_list * c_int + (foreign,size_of(X,LengthIn),size_of(Y,LengthOut)) #
  "obtains roots of a polynomial function by calling foreign C program which will call GSL solver.  @var{Err} is
  error code, 0 when GSL succeed, -1 otherwise" -->
