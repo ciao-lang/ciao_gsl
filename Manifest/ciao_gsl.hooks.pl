@@ -57,7 +57,7 @@ do_auto_install :-
 
 prepare_bindings :-
 	( enabled(yes) ->
-	    normal_message("configuring GSL library", []),
+	    normal_message("configuring GSL interface", []),
 	    S = [(:- include(ciao_gsl(gsl_ciao)))],
  	    foreign_config_atmlist(ciao_gsl, gsl, 'cflags', CompilerOpts),
  	    foreign_config_atmlist(ciao_gsl, gsl, 'libs', LinkerOpts1),
@@ -72,7 +72,7 @@ prepare_bindings :-
 		(:- extra_compiler_opts(CompilerOpts)),
 		(:- extra_linker_opts(LinkerOpts))
               ], ~bundle_path(ciao_gsl, 'src/gsl_ciao_decl_auto.pl'), _)
-	; normal_message("ignoring GSL library", []),
+	; normal_message("ignoring GSL interface", []),
 	  LinkerOpts = [],
 	  S = [(:- include(ciao_gsl(gsl_ciao_dummy)))]
 	),
