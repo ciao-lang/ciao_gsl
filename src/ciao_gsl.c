@@ -123,7 +123,7 @@ gsl_linalg_QR_Rsolve_over_determined (const gsl_matrix * QR,
 void
 get_gsl_version(char ** ptr)
 {
-	*ptr = (char *) GSL_VERSION;
+        *ptr = (char *) GSL_VERSION;
 }
 
 /* polynomial_root/5 */
@@ -135,7 +135,7 @@ get_gsl_version(char ** ptr)
    -------------------------------------------------------------------------- */
 void polynomial_root(size_t nbElmt,size_t nbElmtOut,double* input_list, double** output_list, int* errcode){
   size_t i, nb_elmt_output;
-  int gsl_retval;	
+  int gsl_retval;       
   gsl_poly_complex_workspace * w = gsl_poly_complex_workspace_alloc (nbElmt);
   *output_list=(double*) ciao_malloc ((nbElmtOut)* sizeof(double)); //this ciao_malloc will be freed by ciao prolog memory memory management system
 
