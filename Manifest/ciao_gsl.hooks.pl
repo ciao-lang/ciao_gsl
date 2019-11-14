@@ -25,7 +25,7 @@ m_bundle_foreign_config_tool(ciao_gsl, gsl, 'gsl-config').
 ]).
 
 third_party_preinstalled(ciao_gsl) :-
-	find_executable(~m_bundle_foreign_config_tool(ciao_gsl, gsl), _).
+    find_executable(~m_bundle_foreign_config_tool(ciao_gsl, gsl), _).
 
 % Specification of GSL (third-party component)
 :- def_third_party(gsl, [
@@ -40,8 +40,8 @@ enabled := ~get_bundle_flag(ciao_gsl:enabled).
 auto_install := ~get_bundle_flag(ciao_gsl:auto_install).
 
 '$builder_hook'(prepare_build_bin) :-
-	do_auto_install,
-	prepare_bindings.
+    do_auto_install,
+    prepare_bindings.
 
 :- use_module(ciaobld(third_party_install), [auto_install/2]).
 :- use_module(ciaobld(builder_aux), [add_rpath/3]).
@@ -49,40 +49,40 @@ auto_install := ~get_bundle_flag(ciao_gsl:auto_install).
 :- use_module(ciaobld(builder_aux), [update_stat_config_sh/2]).
 
 do_auto_install :-
-	( auto_install(yes) -> 
-	    normal_message("auto-installing GSL (third party)", []),
-	    third_party_install:auto_install(ciao_gsl, gsl)
-	; true
-	).
+    ( auto_install(yes) -> 
+        normal_message("auto-installing GSL (third party)", []),
+        third_party_install:auto_install(ciao_gsl, gsl)
+    ; true
+    ).
 
 prepare_bindings :-
-	( enabled(yes) ->
-	    normal_message("configuring GSL interface", []),
-	    S = [(:- include(ciao_gsl(gsl_ciao)))],
- 	    foreign_config_atmlist(ciao_gsl, gsl, 'cflags', CompilerOpts),
- 	    foreign_config_atmlist(ciao_gsl, gsl, 'libs', LinkerOpts1),
-	    ( auto_install(yes) ->
-	        % If installed as a third party, add ./third-party/lib
-	        % to the runtime library search path
-	        add_rpath(local_third_party, LinkerOpts1, LinkerOpts2)
-	    ; LinkerOpts2 = LinkerOpts1
-	    ),
-	    add_rpath(executable_path, LinkerOpts2, LinkerOpts),
-	    update_file_from_clauses([
-		(:- extra_compiler_opts(CompilerOpts)),
-		(:- extra_linker_opts(LinkerOpts))
-              ], ~bundle_path(ciao_gsl, 'src/gsl_ciao_decl_auto.pl'), _)
-	; normal_message("ignoring GSL interface", []),
-	  LinkerOpts = [],
-	  S = [(:- include(ciao_gsl(gsl_ciao_dummy)))]
-	),
-	%
-	update_file_from_clauses(S, ~bundle_path(ciao_gsl, 'src/ciao_gsl_auto.pl'), _),
-	%
-        % TODO: See 'static_engine' at engine.hooks.pl for an example
-        %   of engine that links against this library statically
-	%
-	% TODO: Simplify, generalize for other libs
-	%
-	GSLEng = eng_def(core, 'gsl', []), % NOTE: not really an engine
-	update_stat_config_sh(GSLEng, LinkerOpts).
+    ( enabled(yes) ->
+        normal_message("configuring GSL interface", []),
+        S = [(:- include(ciao_gsl(gsl_ciao)))],
+        foreign_config_atmlist(ciao_gsl, gsl, 'cflags', CompilerOpts),
+        foreign_config_atmlist(ciao_gsl, gsl, 'libs', LinkerOpts1),
+        ( auto_install(yes) ->
+            % If installed as a third party, add ./third-party/lib
+            % to the runtime library search path
+            add_rpath(local_third_party, LinkerOpts1, LinkerOpts2)
+        ; LinkerOpts2 = LinkerOpts1
+        ),
+        add_rpath(executable_path, LinkerOpts2, LinkerOpts),
+        update_file_from_clauses([
+            (:- extra_compiler_opts(CompilerOpts)),
+            (:- extra_linker_opts(LinkerOpts))
+          ], ~bundle_path(ciao_gsl, 'src/gsl_ciao_decl_auto.pl'), _)
+    ; normal_message("ignoring GSL interface", []),
+      LinkerOpts = [],
+      S = [(:- include(ciao_gsl(gsl_ciao_dummy)))]
+    ),
+    %
+    update_file_from_clauses(S, ~bundle_path(ciao_gsl, 'src/ciao_gsl_auto.pl'), _),
+    %
+    % TODO: See 'static_engine' at engine.hooks.pl for an example
+    %   of engine that links against this library statically
+    %
+    % TODO: Simplify, generalize for other libs
+    %
+    GSLEng = eng_def(core, 'gsl', []), % NOTE: not really an engine
+    update_stat_config_sh(GSLEng, LinkerOpts).
