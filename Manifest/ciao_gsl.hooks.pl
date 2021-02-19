@@ -29,9 +29,12 @@ third_party_preinstalled(ciao_gsl) :-
 
 % Specification of GSL (third-party component)
 :- def_third_party(gsl, [
-    version('1.16'),
-    source_url(tar('http://ftp.gnu.org/gnu/gsl/gsl-1.16.tar.gz')),
-    source_md5("e49a664db13d81c968415cd53f62bc8b"),
+    %version('1.16'),
+    %source_url(tar('http://ftp.gnu.org/gnu/gsl/gsl-1.16.tar.gz')),
+    %source_md5("e49a664db13d81c968415cd53f62bc8b"),
+    version('2.6'),
+    source_url(tar('http://ftp.gnu.org/gnu/gsl/gsl-2.6.tar.gz')),
+    source_md5("bda73a3dd5ff2f30b5956764399db6e7"),
     %
     build_system(gnu_build_system)
 ]).
